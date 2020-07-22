@@ -8,6 +8,8 @@
 #include "./EntityManager.h"
 
 
+class AssetManager;
+
 class Game {
 	private:
 		bool isRunning;
@@ -21,6 +23,8 @@ class Game {
 		bool IsRunning() const;
 		
 		static SDL_Renderer *renderer;
+		static AssetManager* assetManager;
+		static SDL_Event event;
 		void LoadLevel(int levelNumber);
 		void Initialize(int width, int height);
 		void ProcessInput();

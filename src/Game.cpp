@@ -1,10 +1,18 @@
 #include <iostream>
 #include "./Constants.h"
 #include "./Game.h"
+#include "./AssetManager.h"
+#include "./Components/TransformComponent.h"
+#include "./Components/SpriteComponent.h"
 #include "../lib/glm/glm.hpp"
+#include "./Components/KeyboardControlComponent.h"
+
 
 EntityManager manager;
+AssetManager* Game::assetManager = new AssetManager(&manager);
 SDL_Renderer* Game::renderer;
+SDL_Event Game::event;
+
 
 Game::Game(){
 	this->isRunning = false;
@@ -42,13 +50,29 @@ void Game::Initialize(int width, int height){
 		std::cerr << "Error creating SDL renderer" << std::endl;
 		return;
 	}
+	
+	LoadLevel(0);
 
 	isRunning = true;
 	return;
 }
 
+void Game::LoadLevel(int levelNumber){
+
+	assetManager->AddTexture("tank-image", std::string("./assets/images/tank-big-right.png").c_str());
+	assetManager->AddTexture("chopper-image", std::string("./assets/images/chopper-spritesheet.png").c_str());
+	
+	Entity& chopperEntity(manager.AddEntity("chopper"));
+	chopperEntity.AddComponent<TransformComponent>(240, 106, 0,0,32,32,1);
+	chopperEntity.AddComponent<SpriteComponent>("chopper-image", 2, 90, true, false);
+	chopperEntity.AddComponent<KeyboardControlComponent>("up", "right", "down", "left", "space");
+	// add entities and add component
+	Entity& tankEntity(manager.AddEntity("tank"));
+	tankEntity.AddComponent<TransformComponent>(0,0,20,20,32,32,1);
+	tankEntity.AddComponent<SpriteComponent>("tank-image");
+}
+
 void Game::ProcessInput(){
-	SDL_Event event;
 	SDL_PollEvent(&event);
 	switch (event.type){
 		case SDL_QUIT: {
@@ -86,16 +110,18 @@ void Game::Update(){
 	
 	// sets the new ticks for current frame to be used next
 	ticksLastFrame = SDL_GetTicks();
-
-	// call manager.update to update all entities
+     
+	manager.Update(deltaTime);
 }
 
 void Game::Render(){
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
 	
-	// call manager.render to render all entities
-	
+	if(manager.HasNoEntities()){
+		return;
+	}	
+	manager.Render();
 
 	SDL_RenderPresent(renderer);
 }
