@@ -12,10 +12,13 @@ class EntityManager{
 		void ClearData();
 		void Update(float deltaTime);
 		void Render();
-		bool HasNoEntities();
-		Entity& AddEntity(std::string entityName);
+		bool HasNoEntities() const;
+		unsigned int GetEntityCount() const;
+		void ListAllEntities() const;
 		std::vector<Entity*> GetEntities() const;
-		unsigned int GetEntityCount();
+		std::vector<Entity*> GetEntitiesByLayer(LayerType layer) const;
+		Entity& AddEntity(std::string entityName, LayerType layer);
+		std::string CheckEntityCollisions(Entity& entity) const;
 };
 
 #endif

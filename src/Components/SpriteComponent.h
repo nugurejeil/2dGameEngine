@@ -86,8 +86,8 @@ class SpriteComponent: public Component{
 			sourceRectangle.y = animationIndex * transform->height;
 
 
-			destinationRectangle.x = static_cast<int>(transform->position.x);
-			destinationRectangle.y = static_cast<int>(transform->position.y);
+			destinationRectangle.x = static_cast<int>(transform->position.x) - Game::camera.x;
+			destinationRectangle.y = static_cast<int>(transform->position.y) - Game::camera.y;
 			destinationRectangle.w = transform->width * transform->scale;
 			destinationRectangle.h = transform->height * transform->scale;
 		}
